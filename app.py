@@ -30,4 +30,4 @@ alfred = CodeAgent(
 )
 
 if __name__ == "__main__":
-    GradioUI(agent).launch()
+    GradioUI(alfred).launch()
