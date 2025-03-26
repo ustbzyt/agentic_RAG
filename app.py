@@ -1,6 +1,6 @@
 import gradio as gr
 import random
-from smolagents import CodeAgent, HfApiModel
+from smolagents import GradioUI, CodeAgent, HfApiModel
 
 # Import our custom tools from their modules
 from tools import DuckDuckGoSearchTool, WeatherInfoTool, HubStatsTool
@@ -29,8 +29,5 @@ alfred = CodeAgent(
     planning_interval=3   # Enable planning every 3 steps
 )
 
-def greet(name):
-    return "Hello " + name + "!!"
-
-demo = gr.Interface(fn=greet, inputs="text", outputs="text")
-demo.launch()
+if __name__ == "__main__":
+    GradioUI(agent).launch()
