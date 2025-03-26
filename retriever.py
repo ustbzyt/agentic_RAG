@@ -16,7 +16,9 @@ class GuestInfoRetrieverTool(Tool):
     output_type = "string"
 
     def __init__(self, docs):
+        self.is_initialized = False
         self.retriever = BM25Retriever.from_documents(docs)
+       
 
     def forward(self, query: str):
         results = self.retriever.get_relevant_documents(query)
