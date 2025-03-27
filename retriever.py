@@ -30,7 +30,7 @@ class GuestInfoRetrieverTool(Tool):
 
 def load_guest_dataset():
     # Load the dataset
-    guest_dataset = datasets.load_dataset("sergiopaniego/unit3-invitees", split="train")
+    guest_dataset = datasets.load_dataset("agents-course/unit3-invitees", split="train")
 
     # Convert dataset entries into Document objects
     docs = [
