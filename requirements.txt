@@ -1,4 +1,27 @@
-datasets 
-smolagents 
-langchain-community 
+# Original dependencies
+datasets
+smolagents
+langchain-community
 rank_bm25
+
+# LlamaIndex Core (if using LlamaIndex)
+llama-index
+
+# LangGraph (if using LangGraph)
+langchain
+langgraph
+
+# --- LLM Integrations ---
+
+# For LlamaIndex + Ollama
+llama-index-llms-ollama
+
+# For LlamaIndex + Gemini
+llama-index-llms-gemini
+
+# For LangChain + Gemini (LangChain + Ollama uses langchain-community)
+langchain-google-genai
+
+# Optional: If using OpenAI models with LangChain or LlamaIndex
+# langchain-openai
+# llama-index-llms-openai
