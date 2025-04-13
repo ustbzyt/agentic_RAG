@@ -3,8 +3,8 @@ import random
 from smolagents import GradioUI, CodeAgent, HfApiModel
 
 # Import our custom tools from their modules
-from tools import DuckDuckGoSearchTool, WeatherInfoTool, HubStatsTool
-from retriever import load_guest_dataset
+from agent_smolagents.tools import DuckDuckGoSearchTool, WeatherInfoTool, HubStatsTool
+from agent_smolagents.retriever import load_guest_dataset
 
 # Initialize the Hugging Face model
 model = HfApiModel()
