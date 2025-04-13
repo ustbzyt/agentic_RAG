@@ -1,5 +1,6 @@
 import datasets
 from langchain.docstore.document import Document
+import sys
 
 def load_and_prepare_docs():
     """Loads the dataset and converts it into Langchain Document objects."""
@@ -15,6 +16,7 @@ def load_and_prepare_docs():
     print("Converting dataset entries to Document objects...")
     docs = [
         Document(
+            # hardcoded
             page_content="\n".join([
                 f"Name: {guest['name']}",
                 f"Relation: {guest['relation']}",

@@ -1,12 +1,19 @@
 import gradio as gr
-from smolagents import GradioUI, CodeAgent, LiteLLMModel
+from smolagents import GradioUI, CodeAgent, DuckDuckGoSearchTool, LiteLLMModel
 import os # Import the os module to access environment variables
 from dotenv import load_dotenv # Optional: Load .env file if you use one
 
-
 # Import our custom tools from their modules
-from agent_smolagents.tools import DuckDuckGoSearchTool, WeatherInfoTool, HubStatsTool
+from agent_smolagents.tools import WeatherInfoTool, HubStatsTool
 from agent_smolagents.retriever import load_guest_dataset
+
+# --- Import tracing functions and state ---
+# Import initialize function, the decorator, and the enabled flag
+from agent_smolagents.tracing import initialize_otel_tracing, traced_handler, IS_TRACING_ENABLED as TRACING_ENABLED_FLAG
+
+# Call the initialization function early in the script execution
+initialize_otel_tracing() # This now sets the IS_TRACING_ENABLED flag in tracing.py
+# --- End OTel tracing setup ---
 
 # Optional: Load environment variables from a .env file
 load_dotenv()
@@ -30,10 +37,8 @@ model = LiteLLMModel(
 
 # Initialize the web search tool
 search_tool = DuckDuckGoSearchTool()
-
 # Initialize the weather tool
 weather_info_tool = WeatherInfoTool()
-
 # Initialize the Hub stats tool
 hub_stats_tool = HubStatsTool()
 
@@ -42,15 +47,31 @@ hub_stats_tool = HubStatsTool()
 guest_info_tool = load_guest_dataset()
 
 
-# Create Alfred with all the tools
+# --- Agent Initialization ---
+# Agent operations will be automatically traced if IS_TRACING_ENABLED is True
 alfred = CodeAgent(
-    tools=[guest_info_tool, weather_info_tool, hub_stats_tool, search_tool], 
+    tools=[guest_info_tool, weather_info_tool, hub_stats_tool, search_tool],
     model=model,
-    add_base_tools=True,  # Add any additional base tools
-    planning_interval=3   # Enable planning every 3 steps
+    add_base_tools=True,
+    planning_interval=3
 )
 
+# --- Apply the tracing decorator (imported from tracing.py) ---
+# Use the flag imported from tracing.py
+if TRACING_ENABLED_FLAG:
+    if hasattr(alfred, 'run') and callable(alfred.run):
+         print("Applying tracing decorator to alfred.run")
+         alfred.run = traced_handler(alfred.run) # Use the imported decorator
+    else:
+         print("Warning: Could not find 'run' method on agent instance to apply tracing decorator.")
+# --- End Decorator Application ---
+
 if __name__ == "__main__":
-    # The check for the API key happens earlier now
     print("Launching Gradio UI with Gemini model via LiteLLM...")
+    # Use the flag imported from tracing.py
+    if TRACING_ENABLED_FLAG:
+        print("Langfuse OpenTelemetry tracing is active.")
+    else:
+        print("Langfuse OpenTelemetry tracing is disabled.")
+
     GradioUI(alfred).launch()
