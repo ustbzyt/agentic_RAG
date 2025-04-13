@@ -4,10 +4,6 @@ import random
 from huggingface_hub import list_models
 
 
-# Initialize the DuckDuckGo search tool
-#search_tool = DuckDuckGoSearchTool()
-
-
 class WeatherInfoTool(Tool):
     name = "weather_info"
     description = "Fetches dummy weather information for a given location."

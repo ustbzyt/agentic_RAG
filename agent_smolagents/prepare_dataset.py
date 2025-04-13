@@ -4,9 +4,14 @@ from langchain.docstore.document import Document
 def load_and_prepare_docs():
     """Loads the dataset and converts it into Langchain Document objects."""
     print("Loading dataset from Hugging Face Hub...")
-    guest_dataset = datasets.load_dataset("agents-course/unit3-invitees", split="train")
-    print(f"Dataset loaded with {len(guest_dataset)} entries.")
-
+    try:
+        guest_dataset = datasets.load_dataset("agents-course/unit3-invitees", split="train")
+        print(f"Dataset loaded with {len(guest_dataset)} entries.")
+    except Exception as e:
+        print(f"Error loading dataset: {e}", file=sys.stderr)
+        # Decide how to handle the error, e.g., return empty list or raise
+        return [] # Or raise e
+    
     print("Converting dataset entries to Document objects...")
     docs = [
         Document(

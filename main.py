@@ -11,9 +11,9 @@ def run_agent(agent_name):
         "graph": "agent_langgraph",
     }
     main_script_map = {
-        "smol": "main_smol.py",
-        "llama": "main_llama.py",
-        "graph": "main_graph.py",
+        "smol": "app.py",
+        "llama": "app.py",
+        "graph": "app.py",
     }
 
     if agent_name not in agent_dir_map:
