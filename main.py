@@ -2,15 +2,24 @@ import argparse
 import subprocess
 import sys
 import os
+from typing import Dict, Optional
 
-def run_agent(agent_name):
-    """Runs the main script for the specified agent."""
-    agent_dir_map = {
+def run_agent(agent_name: str) -> None:
+    """
+    Runs the main script for the specified agent.
+    
+    Args:
+        agent_name: Name of the agent to run (smol, llama, or graph)
+    
+    Raises:
+        SystemExit: If agent_name is invalid or script is not found
+    """
+    agent_dir_map: Dict[str, str] = {
         "smol": "agent_smolagents",
         "llama": "agent_llamaindex",
         "graph": "agent_langgraph",
     }
-    main_script_map = {
+    main_script_map: Dict[str, str] = {
         "smol": "app.py",
         "llama": "app.py",
         "graph": "app.py",
@@ -25,29 +34,41 @@ def run_agent(agent_name):
     script_path = os.path.join(agent_dir, main_script)
 
     if not os.path.exists(script_path):
-         print(f"Error: Main script not found at {script_path}")
-         sys.exit(1)
+        print(f"Error: Main script not found at {script_path}")
+        sys.exit(1)
 
     print(f"--- Running {agent_name} agent ---")
-    # Use subprocess to run the script in its own directory context if needed
-    # Or potentially import and call a main function if designed that way
     try:
-        # Note: Running as subprocess ensures CWD is correct if scripts rely on relative paths
-        process = subprocess.run([sys.executable, main_script], cwd=agent_dir, check=True)
+        module_path = f"{agent_dir}.{main_script.replace('.py', '')}"     
+        process = subprocess.run(
+            [sys.executable, "-m", module_path],
+            check=True,
+            capture_output=False,
+            text=True
+        )
     except subprocess.CalledProcessError as e:
         print(f"Error running {agent_name} agent: {e}")
+        if e.stderr:
+            print(f"Error details: {e.stderr}")
+        sys.exit(1)
     except KeyboardInterrupt:
         print(f"\n--- {agent_name} agent interrupted ---")
     print(f"--- Finished {agent_name} agent ---")
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run different agent implementations.")
-    parser.add_argument("agent", choices=["smol", "llama", "graph"],
-                        help="The name of the agent implementation to run.")
-    # Add other potential arguments here if needed (e.g., input query)
-    # parser.add_argument("-q", "--query", help="Input query for the agent")
-
+def main() -> None:
+    """Main entry point for the script."""
+    parser = argparse.ArgumentParser(
+        description="Run different agent implementations.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "agent",
+        choices=["smol", "llama", "graph"],
+        help="The name of the agent implementation to run."
+    )
     args = parser.parse_args()
     run_agent(args.agent)
+
+if __name__ == "__main__":
+    main()
 

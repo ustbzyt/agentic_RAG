@@ -1,77 +1,74 @@
+import os
+from typing import List, Optional
 import gradio as gr
-from smolagents import GradioUI, CodeAgent, DuckDuckGoSearchTool, LiteLLMModel
-import os # Import the os module to access environment variables
-from dotenv import load_dotenv # Optional: Load .env file if you use one
+from smolagents import Tool, GradioUI, CodeAgent, DuckDuckGoSearchTool, LiteLLMModel
+from dotenv import load_dotenv
 
-# Import our custom tools from their modules
-from agent_smolagents.tools import WeatherInfoTool, HubStatsTool
-from agent_smolagents.retriever import load_guest_dataset
-
-# --- Import tracing functions and state ---
-# Import initialize function, the decorator, and the enabled flag
-from agent_smolagents.tracing import initialize_otel_tracing, traced_handler, IS_TRACING_ENABLED as TRACING_ENABLED_FLAG
-
-# Call the initialization function early in the script execution
-initialize_otel_tracing() # This now sets the IS_TRACING_ENABLED flag in tracing.py
-# --- End OTel tracing setup ---
-
-# Optional: Load environment variables from a .env file
-load_dotenv()
-
-# --- Model Initialization Change ---
-# Initialize the Google Gemini model
-# Make sure GEMINI_API_KEY environment variable is set
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-if not gemini_api_key:
-    raise ValueError("GEMINI_API_KEY environment variable not set.")
-
-# Initialize using LiteLLMModel
-# Use a valid model name prefixed with 'gemini/'
-# e.g., "gemini/gemini-pro", "gemini/gemini-1.5-flash", "gemini/gemini-1.5-pro"
-model = LiteLLMModel(
-    model_id="gemini/gemini-1.5-flash", # Adjust model name as needed
-    api_key=gemini_api_key,
-    # max_tokens=8192 # Optional
-)
-# --- End Model Initialization Change ---
-
-# Initialize the web search tool
-search_tool = DuckDuckGoSearchTool()
-# Initialize the weather tool
-weather_info_tool = WeatherInfoTool()
-# Initialize the Hub stats tool
-hub_stats_tool = HubStatsTool()
-
-# Load the guest dataset and initialize the guest info tool
-# This now correctly calls the function in retriever.py
-guest_info_tool = load_guest_dataset()
-
-
-# --- Agent Initialization ---
-# Agent operations will be automatically traced if IS_TRACING_ENABLED is True
-alfred = CodeAgent(
-    tools=[guest_info_tool, weather_info_tool, hub_stats_tool, search_tool],
-    model=model,
-    add_base_tools=True,
-    planning_interval=3
+# Import custom tools and utilities
+from .tools import WeatherInfoTool, HubStatsTool
+from .retriever import load_guest_dataset
+from .tracing import (
+    initialize_otel_tracing,
+    traced_handler,
 )
 
-# --- Apply the tracing decorator (imported from tracing.py) ---
-# Use the flag imported from tracing.py
-if TRACING_ENABLED_FLAG:
-    if hasattr(alfred, 'run') and callable(alfred.run):
-         print("Applying tracing decorator to alfred.run")
-         alfred.run = traced_handler(alfred.run) # Use the imported decorator
-    else:
-         print("Warning: Could not find 'run' method on agent instance to apply tracing decorator.")
-# --- End Decorator Application ---
+def initialize_model() -> LiteLLMModel:
+    """Initialize and return the Gemini model instance."""
+    gemini_api_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_api_key:
+        raise ValueError("GEMINI_API_KEY environment variable not set.")
+
+    return LiteLLMModel(
+        model_id="gemini/gemini-1.5-flash",
+        api_key=gemini_api_key,
+    )
+
+def initialize_tools() -> List[Tool]:
+    """Initialize and return a list of all available tools."""
+    return [
+        load_guest_dataset(),  # Guest info retriever
+        WeatherInfoTool(),     # Weather information
+        HubStatsTool(),        # Hugging Face Hub stats
+        DuckDuckGoSearchTool() # Web search
+    ]
+
+def setup_tracing(agent: CodeAgent, tracing_enabled: bool) -> None:
+    """Apply tracing decorator to the agent if tracing is enabled."""
+    if tracing_enabled and hasattr(agent, 'run') and callable(agent.run):
+        print("Applying tracing decorator to agent.run")
+        agent.run = traced_handler(agent.run)
+    elif tracing_enabled:
+        print("Warning: Could not find 'run' method on agent instance to apply tracing decorator.")
+
+def main() -> None:
+    """Main entry point for the application."""
+    # Load environment variables
+    load_dotenv()
+    
+    # Initialize tracing
+    tracing_initialized_successfully = initialize_otel_tracing()
+    print("Langfuse OpenTelemetry tracing is " +
+          ("active." if tracing_initialized_successfully else "disabled."))
+
+    
+    # Initialize model and tools
+    model = initialize_model()
+    tools = initialize_tools()
+    
+    # Create and configure agent
+    alfred = CodeAgent(
+        tools=tools,
+        model=model,
+        add_base_tools=True,
+        planning_interval=3
+    )
+    
+    # Setup tracing if enabled
+    setup_tracing(alfred, tracing_initialized_successfully)
+    
+    # Launch Gradio UI
+    print("Launching Gradio UI with Gemini model via LiteLLM...")
+    GradioUI(alfred).launch()
 
 if __name__ == "__main__":
-    print("Launching Gradio UI with Gemini model via LiteLLM...")
-    # Use the flag imported from tracing.py
-    if TRACING_ENABLED_FLAG:
-        print("Langfuse OpenTelemetry tracing is active.")
-    else:
-        print("Langfuse OpenTelemetry tracing is disabled.")
-
-    GradioUI(alfred).launch()
+    main()
