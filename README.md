@@ -56,7 +56,7 @@ The following frameworks are being used or are planned for this comparison:
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repository-url>
+    git clone https://github.com/ustbzyt/agentic_RAG.git
     cd Unit_3_Agentic_RAG
     ```
 
