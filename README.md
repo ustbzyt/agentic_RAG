@@ -36,33 +36,29 @@ The following frameworks are being used or are planned for this comparison:
 
 ## Project Structure
 
-/Unit_3_Agentic_RAG             (Project Root)
-|
-|-- /agent_smolagents           (smol-agents implementation)
-|   |-- app.py                  (Gradio UI logic - *called by main.py*)
-|   |-- tools.py                (Custom tool definitions)
-|   |-- retriever.py            (Guest dataset loading and retrieval tool)
-|   |-- tracing.py              (Langfuse OpenTelemetry tracing setup)
-|   |-- ...
-|
-|-- /agent_langgraph            (LangGraph implementation)
-|   |-- app.py                  (CLI logic - *called by main.py*)
-|   |-- agent_core.py           (LangGraph graph definition)
-|   |-- agent_state.py          (Definition of the AgentState)
-|   |-- nodes.py                (Graph node logic - assistant, tools)
-|   |-- utils.py                (Tool definitions, LLM setup, agent_runnable)
-|   |-- retriever.py            (Guest dataset loading and retrieval tool)
-|   |-- prepare_dataset.py      (Helper for loading guest data)
-|   |-- langfuse_client.py      (Langfuse handler setup)
-|   |-- ...
-|
-|-- /agent_llamaindex           (Placeholder for next framework)
-|   |-- ...
-|
-|-- main.py                     (Top-level script to select and run agents)
-|-- requirements.txt            (Python dependencies for the entire project)
-|-- .env.example                (Example environment variables)
-|-- README.md
+/Unit_3_Agentic_RAG (Project Root) 
+├── /agent_smolagents (smol-agents implementation) 
+│ ├── app.py (Gradio UI logic - called by main.py) 
+│ ├── tools.py (Custom tool definitions) 
+│ ├── retriever.py (Guest dataset loading and retrieval tool) 
+│ ├── tracing.py (Langfuse OpenTelemetry tracing setup) 
+│ └── ... 
+├── /agent_langgraph (LangGraph implementation) 
+│ ├── app.py (CLI logic - called by main.py) 
+│ ├── agent_core.py (LangGraph graph definition) 
+│ ├── agent_state.py (Definition of the AgentState) 
+│ ├── nodes.py (Graph node logic - assistant, tools) 
+│ ├── utils.py (Tool definitions, LLM setup, agent_runnable) 
+│ ├── retriever.py (Guest dataset loading and retrieval tool) 
+│ ├── prepare_dataset.py (Helper for loading guest data) 
+│ ├── langfuse_client.py (Langfuse handler setup) 
+│ └── ... 
+├── /agent_llamaindex (Placeholder for next framework) 
+│ └── ... 
+├── main.py (Top-level script to select and run agents) 
+├── requirements.txt (Python dependencies for the entire project) 
+├── .env.example (Example environment variables) 
+└── README.md
 
 ## Setup and Installation
 
