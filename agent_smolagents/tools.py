@@ -107,7 +107,7 @@ class HubStatsTool(Tool):
             )
         }
     }
-
+    output_type = "string"
     def forward(self, author: str) -> str:
         """Fetch and return the most downloaded model for the given author."""
         try:
