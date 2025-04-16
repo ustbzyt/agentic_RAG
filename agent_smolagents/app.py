@@ -1,6 +1,5 @@
 import os
-from typing import List, Optional
-import gradio as gr
+from typing import List
 from smolagents import Tool, GradioUI, CodeAgent, DuckDuckGoSearchTool, LiteLLMModel
 from dotenv import load_dotenv
 
