@@ -12,11 +12,13 @@ The core functionality implemented across the frameworks is a **conversational a
 *   Utilizing a set of tools to gather information:
     *   Retrieving information about specific guests (using a local dataset).
     *   Fetching current weather information.
-    *   *(Note: HubStatsTool and Web Search are currently implemented only in smol-agents, but can be added to others)*
+    *   Performing web searches (using DuckDuckGo - *currently implemented in smolagents and LangGraph*).
+    *   *(Note: HubStatsTool is currently implemented only in smol-agents, but can be added to others)*
 *   Interacting with the user via:
     *   A Gradio web interface (`smol-agents`).
     *   A command-line interface (`LangGraph`).
 *   (Optional) Sending execution traces to Langfuse for observability.
+
 
 ## Frameworks
 
@@ -54,7 +56,7 @@ The following frameworks are being used or are planned for this comparison:
 |   |-- langfuse_client.py      (Langfuse handler setup)
 |   |-- ...
 |
-|-- /agent_framework_c          (Placeholder for next framework)
+|-- /agent_llamaindex           (Placeholder for next framework)
 |   |-- ...
 |
 |-- main.py                     (Top-level script to select and run agents)
@@ -134,14 +136,3 @@ Both the smol-agents and LangGraph implementations include optional integration 
 For smol-agents, see agent_smolagents/tracing.py.
 For LangGraph, see agent_langgraph/langfuse_client.py and how langfuse_handler is used.
 plaintext
-
-**Key Changes:**
-
-*   Updated **Functionality Implemented** to mention both Gradio and CLI interfaces.
-*   Updated **Frameworks** and **Current Status** to include LangGraph.
-*   Updated **Project Structure** to show LangGraph files and note that `main.py` calls the respective `app.py` files.
-*   Simplified **Setup** as `requirements.txt` is at the root.
-*   Completely revamped the **Usage** section to explain the `main.py` arguments and provide clear examples for running `smol` and `graph`.
-*   Updated **Observability** to mention LangGraph's Langfuse integration.
-
-This looks much clearer and accurately reflects how to run your different agent implementations!

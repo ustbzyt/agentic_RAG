@@ -13,7 +13,10 @@ def assistant(state: AgentState) -> AgentState:
         Fetches real-time weather information for a given location using OpenWeatherMap API.
         retrieve_guest_info(query: str) -> str:
         Retrieves detailed information about gala guests based on their name or relation.
+        duckduckgo_search(query: str) -> str:
+        Performs a web search using DuckDuckGo to find information on the internet. Use this for general knowledge questions or current events.
         """
+        
         sys_prompt = f"""
         You are a helpful butler named Alfred serving Mr. Wayne and Batman.
         You can use the tools below:

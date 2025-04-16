@@ -7,6 +7,7 @@ from .retriever import guest_info_retriever
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.runnables import Runnable
+from langchain_community.tools import DuckDuckGoSearchRun
 
 
 @dataclass
@@ -100,7 +101,8 @@ def get_weather_info(location: str) -> str:
         print(f"An unexpected error occurred: {e}") # Log this properly
         return f"An unexpected error occurred while processing weather for '{location}'."
 
-tools: List[Any] = [guest_info_retriever, get_weather_info]
+search_tool = DuckDuckGoSearchRun()
+tools: List[Any] = [guest_info_retriever, get_weather_info, search_tool]
 
 try:
     # 1. Ensure GEMINI_API_KEY is set in your environment variables
