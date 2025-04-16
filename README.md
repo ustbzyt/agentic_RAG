@@ -36,6 +36,7 @@ The following frameworks are being used or are planned for this comparison:
 
 ## Project Structure
 
+```
 /Unit_3_Agentic_RAG (Project Root) 
 ├── /agent_smolagents (smol-agents implementation) 
 │ ├── app.py (Gradio UI logic - called by main.py) 
@@ -59,6 +60,7 @@ The following frameworks are being used or are planned for this comparison:
 ├── requirements.txt (Python dependencies for the entire project) 
 ├── .env.example (Example environment variables) 
 └── README.md
+```
 
 ## Setup and Installation
 
