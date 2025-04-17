@@ -2,135 +2,141 @@
 
 ## Project Goal
 
-This project implements a conversational agent with access to various tools using distinct Python frameworks. The primary goal is to compare and contrast the development experience, performance, observability features, and architectural patterns offered by each framework when building the same agent functionality.
+This project implements a conversational agent named Alfred with access to various tools using three distinct Python frameworks. The primary goal is to compare and contrast the development experience, performance, observability features, and architectural patterns offered by each framework when building the same agent functionality.
 
 ## Functionality Implemented
 
-The core functionality implemented across the frameworks is a **conversational agent** capable of:
+The core functionality implemented across the frameworks is a **conversational agent** named Alfred capable of:
 
-*   Answering user questions.
-*   Utilizing a set of tools to gather information:
-    *   Retrieving information about specific guests (using a local dataset).
-    *   Fetching current weather information.
-    *   Performing web searches (using DuckDuckGo - *currently implemented in smolagents and LangGraph*).
-    *   *(Note: HubStatsTool is currently implemented only in smol-agents, but can be added to others)*
-*   Interacting with the user via:
-    *   A Gradio web interface (`smol-agents`).
-    *   A command-line interface (`LangGraph`).
-*   (Optional) Sending execution traces to Langfuse for observability.
-
+* Answering user questions
+* Utilizing a set of tools to gather information:
+    * Retrieving information about specific guests (using a local dataset)
+    * Fetching current weather information
+    * Performing web searches (using DuckDuckGo)
+    * Fetching Hugging Face model statistics
+* Interacting with the user via:
+    * A Gradio web interface (`smol-agents`)
+    * A command-line interface (`LangGraph` and `LlamaIndex`)
+* Optional execution traces to Langfuse for observability
 
 ## Frameworks
 
-The following frameworks are being used or are planned for this comparison:
+The following frameworks are implemented in this project:
 
-1.  **`smol-agents`**: (Implementation Complete in `agent_smolagents`) - smol-agents Documentation
-2.  **`LangGraph`**: (Implementation Complete in `agent_langgraph`) - LangGraph Documentation
-3.  **[TODO: LlamaIndex/Other]**: (Planned / In Progress - represented by `llama` argument) - [Link to Framework documentation]
+1. **`smol-agents`**: (Implementation Complete in `agent_smolagents`)
+   - Uses Gradio for web interface
+   - Implements all core tools
+   - Supports Langfuse tracing
+   - Features:
+     - Clean separation of concerns
+     - Robust error handling
+     - Comprehensive logging
+     - Easy tool integration
 
-## Current Status
+2. **`LangGraph`**: (Implementation Complete in `agent_langgraph`)
+   - Uses CLI interface
+   - Implements all core tools
+   - Supports Langfuse tracing
+   - Features:
+     - Graph-based execution flow
+     - State management
+     - Flexible message handling
+     - Robust error recovery
 
-*   The implementation using **`smol-agents`** is complete and functional (`agent_smolagents` directory, Gradio UI).
-*   The implementation using **`LangGraph`** is complete and functional (`agent_langgraph` directory, CLI).
-*   Implementations for the next framework (e.g., LlamaIndex) are planned.
+3. **`LlamaIndex`**: (Implementation Complete in `agent_llamaindex`)
+   - Uses CLI interface
+   - Implements all core tools
+   - Uses ReActAgent for tool usage
+   - Features:
+     - ReAct-based reasoning
+     - Clean architecture
+     - Comprehensive logging
+     - Robust error handling
 
 ## Project Structure
 
 ```
-/Unit_3_Agentic_RAG (Project Root) 
+/agentic_RAG (Project Root) 
 ├── /agent_smolagents (smol-agents implementation) 
-│ ├── app.py (Gradio UI logic - called by main.py) 
-│ ├── tools.py (Custom tool definitions) 
-│ ├── retriever.py (Guest dataset loading and retrieval tool) 
-│ ├── tracing.py (Langfuse OpenTelemetry tracing setup) 
-│ └── ... 
+│   ├── app.py (Gradio UI logic)
+│   ├── tools.py (Custom tool definitions)
+│   ├── retriever.py (Guest dataset loading and retrieval)
+│   ├── tracing.py (Langfuse OpenTelemetry tracing)
+│   └── prepare_dataset.py (Dataset preparation)
 ├── /agent_langgraph (LangGraph implementation) 
-│ ├── app.py (CLI logic - called by main.py) 
-│ ├── agent_core.py (LangGraph graph definition) 
-│ ├── agent_state.py (Definition of the AgentState) 
-│ ├── nodes.py (Graph node logic - assistant, tools) 
-│ ├── utils.py (Tool definitions, LLM setup, agent_runnable) 
-│ ├── retriever.py (Guest dataset loading and retrieval tool) 
-│ ├── prepare_dataset.py (Helper for loading guest data) 
-│ ├── langfuse_client.py (Langfuse handler setup) 
-│ └── ... 
-├── /agent_llamaindex (Placeholder for next framework) 
-│ └── ... 
-├── main.py (Top-level script to select and run agents) 
-├── requirements.txt (Python dependencies for the entire project) 
-├── .env.example (Example environment variables) 
+│   ├── app.py (CLI logic)
+│   ├── agent_core.py (Graph definition)
+│   ├── agent_state.py (State management)
+│   ├── nodes.py (Graph node logic)
+│   ├── utils.py (Tool definitions and setup)
+│   ├── retriever.py (Guest dataset handling)
+│   ├── prepare_dataset.py (Dataset preparation)
+│   └── langfuse_client.py (Langfuse integration)
+├── /agent_llamaindex (LlamaIndex implementation)
+│   ├── app.py (CLI logic)
+│   ├── utils.py (Tool definitions and setup)
+│   ├── retriever.py (Guest dataset handling)
+│   └── prepare_dataset.py (Dataset preparation)
+├── main.py (Top-level script to select and run agents)
+├── requirements.txt (Project dependencies)
 └── README.md
 ```
 
 ## Setup and Installation
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/ustbzyt/agentic_RAG.git
-    cd Unit_3_Agentic_RAG
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/ustbzyt/agentic_RAG.git
+   cd agentic_RAG
+   ```
 
-2.  **Create and activate a virtual environment (Recommended):**
-    ```bash
-    python -m venv .venv
-    # On Windows
-    .\.venv\Scripts\activate
-    # On macOS/Linux
-    source .venv/bin/activate
-    ```
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv .venv
+   # On Windows
+   .\.venv\Scripts\activate
+   # On macOS/Linux
+   source .venv/bin/activate
+   ```
 
-3.  **Install dependencies:**
-    *   Install all required packages from the root `requirements.txt` file:
-        ```bash
-        pip install -r requirements.txt
-        ```
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-4.  **Configure Environment Variables:**
-    *   Copy the `.env.example` file to `.env`:
-        ```bash
-        # On Windows
-        copy .env.example .env
-        # On macOS/Linux
-        cp .env.example .env
-        ```
-    *   Edit the `.env` file and add your API keys:
-        *   `GEMINI_API_KEY`: Your API key for Google Gemini (used by both smol-agents via LiteLLM and LangGraph via langchain-google-genai).
-        *   `LANGFUSE_PUBLIC_KEY`: Your Langfuse Public Key (optional, for tracing).
-        *   `LANGFUSE_SECRET_KEY`: Your Langfuse Secret Key (optional, for tracing).
-        *   `OPENWEATHERMAP_API_KEY`: Your OpenWeatherMap API key.
-        *   `HUGGINGFACEHUB_API_TOKEN`: Your Hugging Face API token (used by HubStatsTool in smol-agents).
-        *   `OPENAI_API_KEY`: Your OpenAI API key (optional, if you choose to use OpenAI models).
+4. **Configure Environment Variables:**
+   Copy `.env.example` to `.env` and add your API keys:
+   - `GEMINI_API_KEY`: Google Gemini API key
+   - `LANGFUSE_PUBLIC_KEY`: Langfuse Public Key (optional)
+   - `LANGFUSE_SECRET_KEY`: Langfuse Secret Key (optional)
+   - `OPENWEATHERMAP_API_KEY`: OpenWeatherMap API key
+   - `HUGGINGFACEHUB_API_TOKEN`: Hugging Face API token
 
 ## Usage
 
-The `main.py` script is used to launch the desired agent implementation.
-
-**Command:**
+Run the desired agent implementation:
 
 ```bash
 python main.py {smol,llama,graph}
+```
+
 Arguments:
+- `smol`: Runs the smol-agents version (Gradio UI)
+- `llama`: Runs the LlamaIndex version (CLI)
+- `graph`: Runs the LangGraph version (CLI)
 
-smol: Runs the agent implemented using the smol-agents framework (launches Gradio UI).
-llama: Placeholder for the next framework implementation (e.g., LlamaIndex).
-graph: Runs the agent implemented using LangGraph (runs in the command line).
-Examples:
+## Observability
 
-To run the smol-agents version (Gradio UI):
+Both smol-agents and LangGraph implementations include optional integration with Langfuse for tracing agent execution. If you provide your Langfuse API keys in the `.env` file, detailed traces of the agent's thinking process, tool usage, and LLM calls will be sent to your Langfuse project.
 
-bash
-python main.py smol
-Then open the provided local URL (e.g., http://127.0.0.1:7860) in your browser.
+## Error Handling and Logging
 
-To run the LangGraph version (CLI):
+All implementations feature:
+- Comprehensive error handling
+- Detailed logging
+- Graceful error recovery
+- User-friendly error messages
 
-bash
-python main.py graph
-Interact with the agent directly in your terminal.
+## License
 
-Observability
-Both the smol-agents and LangGraph implementations include optional integration with Langfuse for tracing agent execution. If you provide your Langfuse API keys in the .env file, detailed traces of the agent's thinking process, tool usage, and LLM calls will be sent to your Langfuse project.
-
-For smol-agents, see agent_smolagents/tracing.py.
-For LangGraph, see agent_langgraph/langfuse_client.py and how langfuse_handler is used.
-plaintext
+This project is licensed under the MIT License - see the LICENSE file for details.
